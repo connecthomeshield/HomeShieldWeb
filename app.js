@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <!-- Left: Product Image & Spec Details -->
                     <div class="md:col-span-5 space-y-6">
                         <div class="relative rounded-2xl overflow-hidden bg-themeBg border border-themeBorder aspect-square">
-                            <img src="${product.image}" alt="${product.title}" class="w-full h-full object-cover">
+                            <img src="${product.image}" alt="${product.title}" loading="lazy" decoding="async" class="w-full h-full object-cover will-change-transform">
                             <div class="absolute inset-0 bg-gradient-to-t from-themeBg via-transparent to-transparent"></div>
                         </div>
                         <div class="space-y-4">
