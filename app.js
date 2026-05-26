@@ -1588,13 +1588,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Calculate direction of transition
         const dir = direction || (targetIndex > prevIndex ? 'down' : 'up');
 
-        // Apply scroll position reset using cached dimensions to preserve speed
-        const dims = sectionDimensions[targetIndex] || { scrollHeight: 0, clientHeight: 0 };
         if (dir === 'down') {
             targetSection.scrollTop = 0;
         } else {
             // When going up, start from the bottom of the section so they can scroll back up
-            targetSection.scrollTop = dims.scrollHeight - dims.clientHeight;
+            // Use dynamic scrollHeight to handle lazy-loaded images properly
+            targetSection.scrollTop = targetSection.scrollHeight;
         }
 
         // Add 3D structural perspective transform classes
@@ -1641,10 +1640,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const delta = e.deltaY;
-        const dims = sectionDimensions[currentSectionIndex] || { scrollHeight: 0, clientHeight: 0 };
         if (delta > 0) {
-            // Scroll DOWN (user moving wheel down) - check boundary using cached dimension
-            const isAtBottom = activeSection.scrollTop + dims.clientHeight >= dims.scrollHeight - 5;
+            // Scroll DOWN (user moving wheel down) - check boundary dynamically
+            const isAtBottom = activeSection.scrollTop + activeSection.clientHeight >= activeSection.scrollHeight - 5;
             if (isAtBottom) {
                 e.preventDefault();
                 if (currentSectionIndex < sections.length - 1) {
@@ -1693,10 +1691,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (now - lastScrollTime < transitionDuration) return;
 
-            const dims = sectionDimensions[currentSectionIndex] || { scrollHeight: 0, clientHeight: 0 };
             if (deltaY > 0) {
-                // Swiped UPwards (scrolling down) - check boundary using cached dimension
-                const isAtBottom = activeSection.scrollTop + dims.clientHeight >= dims.scrollHeight - 8;
+                // Swiped UPwards (scrolling down) - check boundary dynamically
+                const isAtBottom = activeSection.scrollTop + activeSection.clientHeight >= activeSection.scrollHeight - 8;
                 if (isAtBottom && currentSectionIndex < sections.length - 1) {
                     lastScrollTime = now;
                     transitionToSection(currentSectionIndex + 1, 'down');
@@ -1722,9 +1719,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (now - lastScrollTime < transitionDuration) return;
 
-        const dims = sectionDimensions[currentSectionIndex] || { scrollHeight: 0, clientHeight: 0 };
         if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
-            const isAtBottom = activeSection.scrollTop + dims.clientHeight >= dims.scrollHeight - 5;
+            const isAtBottom = activeSection.scrollTop + activeSection.clientHeight >= activeSection.scrollHeight - 5;
             if (isAtBottom && currentSectionIndex < sections.length - 1) {
                 e.preventDefault();
                 lastScrollTime = now;
