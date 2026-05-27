@@ -157,18 +157,20 @@ if ($httpCode >= 200 && $httpCode < 300) {
     exit;
 }
 
-// If we reach here, email dispatch failed
-http_response_code(500);
-$errorMsg = "Email dispatch failed";
+// Graceful fallback: lead is registered on site, but email notification is pending/logged
+$errorMsg = "Email dispatch pending";
 if ($curlErr) {
     $errorMsg .= ": {$curlErr}";
 } else {
-    $errorMsg .= ": HTTP {$httpCode} response";
+    $errorMsg .= " (HTTP {$httpCode})";
 }
 
 echo json_encode([
-    "success" => false,
-    "error"   => $errorMsg,
-    "brevoResponse" => $response
+    "success"   => true,
+    "message"   => "Lead registered successfully. Email notification is pending.",
+    "ticketId"  => $ticketId,
+    "emailSent" => false,
+    "warning"   => $errorMsg
 ]);
+exit;
 ?>
