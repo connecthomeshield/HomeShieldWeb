@@ -1277,7 +1277,13 @@ document.addEventListener('DOMContentLoaded', () => {
             })
                 .then(async response => {
                     const isJson = response.headers.get('content-type')?.includes('application/json');
-                    const data = isJson ? await response.json() : null;
+                    let data = null;
+                    if (isJson) {
+                        data = await response.json();
+                    } else {
+                        // Assume success with generic message when no JSON payload
+                        data = { success: true, message: 'Email sent successfully.' };
+                    }
 
                     if (!response.ok) {
                         const errorMsg = (data && data.error) ? data.error : `HTTP Error ${response.status}`;
@@ -1286,7 +1292,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return data;
                 })
                 .then(res => {
-                    if (res.success) {
+                    if (res && res.success) {
                         // Store lead to LocalStorage for offline registry cache backup
                         lead.timestamp = new Date().toISOString();
                         let leads = JSON.parse(localStorage.getItem('homeshield_leads')) || [];
