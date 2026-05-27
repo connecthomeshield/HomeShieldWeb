@@ -163,6 +163,9 @@ if ($curlErr) {
     $errorMsg .= ": {$curlErr}";
 } else {
     $errorMsg .= " (HTTP {$httpCode})";
+    if (!empty($response)) {
+        $errorMsg .= ": " . trim($response);
+    }
 }
 
 echo json_encode([
