@@ -1268,7 +1268,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             // Dispatch POST request to our PHP secure mailer
-            fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || ''}send-email.php`, {
+            fetch('send-email.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
