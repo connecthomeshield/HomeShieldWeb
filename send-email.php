@@ -56,7 +56,7 @@ $serviceName = isset($servicesMap[$service]) ? $servicesMap[$service] : $service
 // Brevo Transactional Email configuration (HTTPS API)
 // -----------------------------------------------------------------
 $apiKey   = getenv('BREVO_API_KEY');
-$fromEmail = getenv('BREVO_FROM_EMAIL') ?: 'acac05001@smtp-brevo.com';
+$fromEmail = getenv('BREVO_FROM_EMAIL') ?: 'connect.homeshield@gmail.com';
 $fromName  = 'HomeShield Paint Services';
 $toEmail   = getenv('BREVO_TO_EMAIL') ?: 'connect.homeshield@gmail.com';
 
