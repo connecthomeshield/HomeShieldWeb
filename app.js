@@ -1269,7 +1269,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             // Dispatch POST request to our PHP secure mailer
-            fetch('send-email.php', {
+                        fetch('https://homeshieldweb.onrender.com/send-email.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
