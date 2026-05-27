@@ -1301,7 +1301,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         // Reset form
                         contactForm.reset();
-                        showPremiumToast("Inspection booked & email sent successfully!", true);
+                        showPremiumToast(res.message || "Inspection booked successfully!", true);
                     } else {
                         throw new Error(res.error || "Unknown error occurred.");
                     }
