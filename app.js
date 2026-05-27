@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="md:col-span-5 space-y-6">
                         <div class="relative rounded-2xl overflow-hidden bg-themeBg border border-themeBorder aspect-square">
                             <div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div>
-                            <img src="${product.image}" alt="${product.title}" onload="this.previousElementSibling.style.display='none'" loading="lazy" decoding="async" class="relative z-10 w-full h-full object-cover will-change-transform">
+                            <img src="${product.image}" alt="${product.title}" onload="hideSkeleton(this)" loading="lazy" decoding="async" class="relative z-10 w-full h-full object-cover will-change-transform">
                             <div class="absolute inset-0 bg-gradient-to-t from-themeBg via-transparent to-transparent pointer-events-none z-20"></div>
                         </div>
                         <div class="space-y-4">
@@ -1344,7 +1344,7 @@ document.addEventListener('DOMContentLoaded', () => {
             curing: "Dry Base",
             tools: "Emery Paper 180",
             waterproof: "Dry & Sanded",
-            svg: `<div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div><img src="direction_step1.png" class="relative z-10 w-full h-full object-cover will-change-transform" onload="this.previousElementSibling.style.display='none'" loading="lazy" decoding="async" alt="Surface Sanding & Clean">`
+            svg: `<div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div><img src="direction_step1.png" class="relative z-10 w-full h-full object-cover will-change-transform" onload="hideSkeleton(this)" loading="lazy" decoding="async" alt="Surface Sanding & Clean">`
         },
         2: {
             tag: "Primer Sealing Phase",
@@ -1354,7 +1354,7 @@ document.addEventListener('DOMContentLoaded', () => {
             curing: "6 - 8 Hours",
             tools: "Brush / Roller",
             waterproof: "Base Seal Locked",
-            svg: `<div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div><img src="direction_step2.png" class="relative z-10 w-full h-full object-cover will-change-transform" onload="this.previousElementSibling.style.display='none'" loading="lazy" decoding="async" alt="First Primer Layer">`
+            svg: `<div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div><img src="direction_step2.png" class="relative z-10 w-full h-full object-cover will-change-transform" onload="hideSkeleton(this)" loading="lazy" decoding="async" alt="First Primer Layer">`
         },
         3: {
             tag: "Smoothing Phase",
@@ -1364,7 +1364,7 @@ document.addEventListener('DOMContentLoaded', () => {
             curing: "4 - 6 Hours",
             tools: "Putty Knife / Trowel",
             waterproof: "Micro-Crack Filled",
-            svg: `<div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div><img src="direction_step3.png" class="relative z-10 w-full h-full object-cover will-change-transform" onload="this.previousElementSibling.style.display='none'" loading="lazy" decoding="async" alt="Wall Putty Smoothening">`
+            svg: `<div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div><img src="direction_step3.png" class="relative z-10 w-full h-full object-cover will-change-transform" onload="hideSkeleton(this)" loading="lazy" decoding="async" alt="Wall Putty Smoothening">`
         },
         4: {
             tag: "Primer Sealing Phase",
@@ -1374,7 +1374,7 @@ document.addEventListener('DOMContentLoaded', () => {
             curing: "6 - 8 Hours",
             tools: "Roller / Spray",
             waterproof: "Anchor Lock Layer",
-            svg: `<div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div><img src="direction_step4.png" class="relative z-10 w-full h-full object-cover will-change-transform" onload="this.previousElementSibling.style.display='none'" loading="lazy" decoding="async" alt="Second Primer Layer">`
+            svg: `<div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div><img src="direction_step4.png" class="relative z-10 w-full h-full object-cover will-change-transform" onload="hideSkeleton(this)" loading="lazy" decoding="async" alt="Second Primer Layer">`
         },
         5: {
             tag: "Premium Finish Phase",
@@ -1384,7 +1384,7 @@ document.addEventListener('DOMContentLoaded', () => {
             curing: "4 - 6 Hours",
             tools: "Premium Roller / Brush",
             waterproof: "100% Crystalline Shield",
-            svg: `<div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div><img src="direction_step5.png" class="relative z-10 w-full h-full object-cover will-change-transform" onload="this.previousElementSibling.style.display='none'" loading="lazy" decoding="async" alt="Emulsion / Distemper Finish">`
+            svg: `<div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div><img src="direction_step5.png" class="relative z-10 w-full h-full object-cover will-change-transform" onload="hideSkeleton(this)" loading="lazy" decoding="async" alt="Emulsion / Distemper Finish">`
         }
     };
 

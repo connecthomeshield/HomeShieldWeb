@@ -37,6 +37,19 @@
                 }
             }
         }
+        
+        // Safe skeleton loader helper to handle cache and innerHTML timing issues
+        window.hideSkeleton = function(img) {
+            const loader = img.previousElementSibling || img.parentElement?.querySelector('.skeleton-bg');
+            if (loader) {
+                loader.style.display = 'none';
+            } else {
+                setTimeout(() => {
+                    const fallbackLoader = img.previousElementSibling || img.parentElement?.querySelector('.skeleton-bg');
+                    if (fallbackLoader) fallbackLoader.style.display = 'none';
+                }, 0);
+            }
+        };
     </script>
     <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="./index.css">
@@ -712,7 +725,7 @@
                             <div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div>
                             <img src="./WhatsApp Image 2026-05-25 at 10.27.00 PM.jpeg"
                                 alt="HomeShield Premium Emulsion Label"
-                                onload="this.previousElementSibling.style.display='none'" loading="lazy"
+                                onload="hideSkeleton(this)" loading="lazy"
                                 decoding="async"
                                 class="relative z-10 w-full h-full object-cover object-center will-change-transform group-hover:scale-105 transition-transform duration-700">
                             <div
@@ -761,7 +774,7 @@
                         <div class="relative h-64 overflow-hidden bg-brandNavy">
                             <div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div>
                             <img src="./Home SHEILD primer.jpg.jpeg" alt="HomeShield Wall Primer Label"
-                                onload="this.previousElementSibling.style.display='none'" loading="lazy"
+                                onload="hideSkeleton(this)" loading="lazy"
                                 decoding="async"
                                 class="relative z-10 w-full h-full object-cover object-center will-change-transform group-hover:scale-105 transition-transform duration-700">
                             <div
@@ -810,7 +823,7 @@
                         <div class="relative h-64 overflow-hidden bg-brandNavy">
                             <div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div>
                             <img src="./home shield distemper.jpg.jpeg" alt="HomeShield Acrylic Distemper Label"
-                                onload="this.previousElementSibling.style.display='none'" loading="lazy"
+                                onload="hideSkeleton(this)" loading="lazy"
                                 decoding="async"
                                 class="relative z-10 w-full h-full object-cover object-center will-change-transform group-hover:scale-105 transition-transform duration-700">
                             <div
@@ -1822,7 +1835,7 @@
                                     <div class="absolute inset-0 bg-themeBorder animate-pulse z-0 skeleton-bg"></div>
                                     <img src="direction_step1.png"
                                         class="relative z-10 w-full h-full object-cover will-change-transform"
-                                        onload="this.previousElementSibling.style.display='none'" loading="lazy"
+                                        onload="hideSkeleton(this)" loading="lazy"
                                         decoding="async" alt="Surface Sanding & Clean">
                                 </div>
                                 <!-- Visual floating ambient aura -->
