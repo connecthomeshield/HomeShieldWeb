@@ -1191,7 +1191,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==========================================
-    // 7. LEAD CONTACT FORM & LOCAL STORAGE
+    // 7. LEAD CONTACT FORM & SECURE PHP MAILER
     // ==========================================
     const contactForm = document.getElementById('contact-form');
     const successModal = document.getElementById('success-modal');
@@ -1199,9 +1199,46 @@ document.addEventListener('DOMContentLoaded', () => {
     const successTicketId = document.getElementById('success-ticket-id');
     const successCloseBtn = document.getElementById('success-close-btn');
 
+    // Premium Floating Toast Notification
+    const showPremiumToast = (message, isSuccess = true) => {
+        const existing = document.getElementById('hs-toast');
+        if (existing) existing.remove();
+
+        const toast = document.createElement('div');
+        toast.id = 'hs-toast';
+        toast.className = `fixed bottom-8 right-8 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl border backdrop-blur-md shadow-2xl transition-all duration-500 translate-y-10 opacity-0 ${
+            isSuccess 
+                ? 'bg-emerald-950/80 border-emerald-500/30 text-emerald-300' 
+                : 'bg-rose-950/80 border-rose-500/30 text-rose-300'
+        }`;
+        
+        const icon = isSuccess 
+            ? `<svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>`
+            : `<svg class="w-5 h-5 text-rose-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
+        
+        toast.innerHTML = `
+            ${icon}
+            <div class="text-[10px] font-black uppercase tracking-wider">${message}</div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.remove('translate-y-10', 'opacity-0');
+        }, 50);
+        
+        setTimeout(() => {
+            toast.classList.add('translate-y-10', 'opacity-0');
+            setTimeout(() => toast.remove(), 500);
+        }, 5000);
+    };
+
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
+
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
 
             // Fetch form data
             const name = document.getElementById('form-name').value;
@@ -1215,6 +1252,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const randDigits = Math.floor(1000 + Math.random() * 9000);
             const ticketId = `HS-2026-${randDigits}`;
 
+            // Set loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Booking Visit...";
+            submitBtn.style.opacity = "0.7";
+
             // Create lead structure
             const lead = {
                 ticketId,
@@ -1223,25 +1265,58 @@ document.addEventListener('DOMContentLoaded', () => {
                 email,
                 pincode,
                 service,
-                message,
-                timestamp: new Date().toISOString()
+                message
             };
 
-            // Store in LocalStorage
-            let leads = JSON.parse(localStorage.getItem('homeshield_leads')) || [];
-            leads.push(lead);
-            localStorage.setItem('homeshield_leads', JSON.stringify(leads));
+            // Dispatch POST request to our PHP secure mailer
+            fetch('send-email.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(lead)
+            })
+            .then(async response => {
+                const isJson = response.headers.get('content-type')?.includes('application/json');
+                const data = isJson ? await response.json() : null;
 
-            // Success feedback
-            successTicketId.textContent = ticketId;
-            successModalMsg.innerHTML = `Thank you <strong>${name}</strong>. Your free structural moisture scanning visit and color consultation has been booked successfully!`;
-            
-            // Toggle success modal
-            successModal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
+                if (!response.ok) {
+                    const errorMsg = (data && data.error) ? data.error : `HTTP Error ${response.status}`;
+                    throw new Error(errorMsg);
+                }
+                return data;
+            })
+            .then(res => {
+                if (res.success) {
+                    // Store lead to LocalStorage for offline registry cache backup
+                    lead.timestamp = new Date().toISOString();
+                    let leads = JSON.parse(localStorage.getItem('homeshield_leads')) || [];
+                    leads.push(lead);
+                    localStorage.setItem('homeshield_leads', JSON.stringify(leads));
 
-            // Reset form
-            contactForm.reset();
+                    // Trigger Premium success modal
+                    successTicketId.textContent = ticketId;
+                    successModalMsg.innerHTML = `Thank you <strong>${name}</strong>. Your free structural moisture scanning visit and color consultation has been booked successfully!`;
+                    successModal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+
+                    // Reset form
+                    contactForm.reset();
+                    showPremiumToast("Inspection booked & email sent successfully!", true);
+                } else {
+                    throw new Error(res.error || "Unknown error occurred.");
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting form:', error);
+                showPremiumToast(error.message || "Failed to book. Please check server settings.", false);
+            })
+            .finally(() => {
+                // Restore button state
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+                submitBtn.style.opacity = "";
+            });
         });
     }
 
