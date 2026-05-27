@@ -350,25 +350,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const svgExterior = document.getElementById('svg-exterior');
     const btnSceneLiving = document.getElementById('btn-scene-living');
     const btnSceneExterior = document.getElementById('btn-scene-exterior');
-    
+
     // Segment selectors
     const btnSegmentAccent = document.getElementById('btn-segment-accent');
     const btnSegmentSide = document.getElementById('btn-segment-side');
     const btnSegmentCeiling = document.getElementById('btn-segment-ceiling');
-    
+
     // Day/Night switch
     const btnAmbientLight = document.getElementById('btn-ambient-light-toggle');
     const litIndicatorSun = document.getElementById('lit-indicator-sun');
     const litIndicatorMoon = document.getElementById('lit-indicator-moon');
     const labelAmbientLight = document.getElementById('label-ambient-light');
-    
+
     // Finish Selectors
     const finishButtons = document.querySelectorAll('.btn-finish-select');
-    
+
     // HUD Actions
     const btnResetVisualizer = document.getElementById('btn-visualizer-reset');
     const btnSaveVisualizer = document.getElementById('btn-visualizer-save');
-    
+
     // Harmony Buttons
     const harmonyBtnComp = document.getElementById('harmony-btn-comp');
     const harmonyBtnMono = document.getElementById('harmony-btn-mono');
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const harmonyDotComp = document.getElementById('harmony-dot-comp');
     const harmonyDotMono = document.getElementById('harmony-dot-mono');
     const harmonyDotTriad = document.getElementById('harmony-dot-triad');
-    
+
     // Modal selectors
     const paletteModal = document.getElementById('palette-saved-modal');
     const btnClosePaletteModal = document.getElementById('btn-close-saved-modal');
@@ -457,7 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
             harmonyDotComp.style.backgroundColor = harmony.comp;
             harmonyDotMono.style.backgroundColor = harmony.mono;
             harmonyDotTriad.style.backgroundColor = harmony.triad;
-            
+
             // Set text helper inside buttons
             harmonyBtnComp.querySelector('span:not([id])').textContent = harmony.compName;
             harmonyBtnMono.querySelector('span:not([id])').textContent = harmony.monoName;
@@ -480,8 +480,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Apply texture filter to wall elements
     const applyTextureFilter = (finish) => {
         const allWalls = [...targetsLiving.accent, ...targetsLiving.side, ...targetsLiving.ceiling,
-                          ...targetsExterior.accent, ...targetsExterior.side, ...targetsExterior.ceiling];
-        
+        ...targetsExterior.accent, ...targetsExterior.side, ...targetsExterior.ceiling];
+
         allWalls.forEach(wall => {
             if (wall) {
                 if (finish === 'matt') {
@@ -515,10 +515,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             // Add active ring
             swatchBtn.className = swatchBtn.className.replace('border-slate-800', 'ring-2 ring-gold-500');
-            
+
             // Set painted color state
             paintedColors[activeScene][activeSegment] = color.hex;
-            
+
             // Paint wall
             applyColorToDOM(activeScene, activeSegment, color.hex);
 
@@ -553,23 +553,23 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const pending = JSON.parse(pendingPaintStr);
             localStorage.removeItem('homeshield_pending_paint');
-            
+
             // Set paintedColor state
             paintedColors[activeScene][activeSegment] = pending.hex;
-            
+
             // Paint wall
             applyColorToDOM(activeScene, activeSegment, pending.hex);
 
             // Update details
             const specColor = findColorByHex(pending.hex);
             updateActiveColorDetails(specColor);
-            
+
             // Scroll to visualizer after a short delay to allow page rendering
             setTimeout(() => {
                 const vis = document.getElementById('visualizer');
                 if (vis) vis.scrollIntoView({ behavior: 'smooth' });
             }, 600);
-        } catch(e) {
+        } catch (e) {
             console.error("Error reading pending paint: ", e);
         }
     }
@@ -577,7 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // segment button toggles
     const setSegmentActive = (segment) => {
         activeSegment = segment;
-        
+
         // Remove style classes
         [btnSegmentAccent, btnSegmentSide, btnSegmentCeiling].forEach(btn => {
             if (btn) {
@@ -611,7 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             btn.className = btn.className.replace("text-themeTextMuted bg-themeBgAlt border border-themeBorder hover:text-themeText", "bg-themeAccent text-themeBgAlt border border-themeAccent shadow-sm");
-            
+
             // Apply filter
             applyTextureFilter(finish);
         });
@@ -621,7 +621,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnAmbientLight) {
         btnAmbientLight.addEventListener('click', () => {
             isNightMode = !isNightMode;
-            
+
             const livingNightOverlay = document.getElementById('living-room-night-overlay');
             const lampLightCone = document.getElementById('lamp-light-cone');
             const lampBulbGlowDot = document.getElementById('lamp-bulb-glow-dot');
@@ -635,12 +635,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (litIndicatorSun) litIndicatorSun.classList.add('hidden');
                 if (litIndicatorMoon) litIndicatorMoon.classList.remove('hidden');
                 if (labelAmbientLight) labelAmbientLight.textContent = "Night Mode";
-                
+
                 // Living Room night
                 if (livingNightOverlay) livingNightOverlay.style.opacity = '0.75';
                 if (lampLightCone) lampLightCone.style.opacity = '0.85';
                 if (lampBulbGlowDot) lampBulbGlowDot.style.opacity = '1';
-                
+
                 // Exterior night
                 if (exteriorNightOverlay) exteriorNightOverlay.style.opacity = '0.85';
                 if (exteriorLightLeft) exteriorLightLeft.style.opacity = '0.85';
@@ -652,12 +652,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (litIndicatorSun) litIndicatorSun.classList.remove('hidden');
                 if (litIndicatorMoon) litIndicatorMoon.classList.add('hidden');
                 if (labelAmbientLight) labelAmbientLight.textContent = "Day Mode";
-                
+
                 // Living Room day
                 if (livingNightOverlay) livingNightOverlay.style.opacity = '0';
                 if (lampLightCone) lampLightCone.style.opacity = '0';
                 if (lampBulbGlowDot) lampBulbGlowDot.style.opacity = '0';
-                
+
                 // Exterior day
                 if (exteriorNightOverlay) exteriorNightOverlay.style.opacity = '0';
                 if (exteriorLightLeft) exteriorLightLeft.style.opacity = '0';
@@ -671,7 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const applyHarmonyColor = (harmonyHex) => {
         // Update paintedColors state
         paintedColors[activeScene][activeSegment] = harmonyHex;
-        
+
         // Paint DOM element
         applyColorToDOM(activeScene, activeSegment, harmonyHex);
 
@@ -751,11 +751,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnSaveVisualizer && paletteModal) {
         btnSaveVisualizer.addEventListener('click', () => {
             const current = paintedColors[activeScene];
-            
+
             const accentCol = findColorByHex(current.accent);
             const sideCol = findColorByHex(current.side);
             const ceilingCol = findColorByHex(current.ceiling);
-            
+
             // Set text & dots inside Saved Modal
             if (savedSwatchAccent) savedSwatchAccent.style.backgroundColor = accentCol.hex;
             if (savedNameAccent) savedNameAccent.textContent = accentCol.name;
@@ -763,7 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (savedNameSide) savedNameSide.textContent = sideCol.name;
             if (savedSwatchCeiling) savedSwatchCeiling.style.backgroundColor = ceilingCol.hex;
             if (savedNameCeiling) savedNameCeiling.textContent = ceilingCol.name;
-            
+
             // Show modal
             paletteModal.classList.remove('hidden');
         });
@@ -780,7 +780,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSceneLiving.addEventListener('click', () => {
             btnSceneLiving.className = "flex-1 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg bg-themeAccent text-themeBgAlt shadow-md transition-all";
             btnSceneExterior.className = "flex-1 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg text-themeTextMuted hover:text-themeText transition-all";
-            
+
             svgLivingRoom.classList.remove('hidden');
             svgExterior.classList.add('hidden');
             activeScene = 'living';
@@ -790,7 +790,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSceneExterior.addEventListener('click', () => {
             btnSceneExterior.className = "flex-1 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg bg-themeAccent text-themeBgAlt shadow-md transition-all";
             btnSceneLiving.className = "flex-1 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg text-themeTextMuted hover:text-themeText transition-all";
-            
+
             svgExterior.classList.remove('hidden');
             svgLivingRoom.classList.add('hidden');
             activeScene = 'exterior';
@@ -845,10 +845,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const atlasVibeFilters = document.getElementById('atlas-vibe-filters');
     const atlasCardsGrid = document.getElementById('atlas-cards-grid');
     const atlasEmptyState = document.getElementById('atlas-empty-state');
-    
+
     const atlasToast = document.getElementById('atlas-toast');
     const atlasToastText = document.getElementById('atlas-toast-text');
-    
+
     const generatedPaletteBands = document.getElementById('generated-palette-bands');
     const generatedPaletteDesc = document.getElementById('generated-palette-desc');
     const btnGeneratePalette = document.getElementById('btn-generate-palette');
@@ -860,7 +860,7 @@ document.addEventListener('DOMContentLoaded', () => {
         atlasToastText.textContent = message;
         atlasToast.classList.remove('translate-y-20', 'opacity-0');
         atlasToast.classList.add('translate-y-0', 'opacity-100');
-        
+
         setTimeout(() => {
             atlasToast.classList.remove('translate-y-0', 'opacity-100');
             atlasToast.classList.add('translate-y-20', 'opacity-0');
@@ -871,14 +871,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderAtlas = () => {
         if (!atlasCardsGrid) return;
         atlasCardsGrid.innerHTML = '';
-        
+
         const query = (atlasSearchInput ? atlasSearchInput.value : '').toLowerCase().trim();
         let visibleCount = 0;
 
         globalAtlasColors.forEach(color => {
             // Vibe check
             const matchesVibe = currentVibeFilter === 'all' || color.vibe === currentVibeFilter;
-            
+
             // Search check
             const matchesSearch = color.name.toLowerCase().includes(query) || color.hex.toLowerCase().includes(query);
 
@@ -886,7 +886,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 visibleCount++;
                 const card = document.createElement('div');
                 card.className = "glass-panel p-4 rounded-2xl flex flex-col justify-between space-y-4 hover:border-themeAccent/40 hover:shadow-lg transition-all duration-300 group hover:-translate-y-1 text-themeText";
-                
+
                 card.innerHTML = `
                     <div class="h-28 w-full rounded-xl shadow-inner relative overflow-hidden flex items-center justify-center cursor-pointer active-paint-trigger" style="background-color: ${color.hex}">
                         <span class="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[9px] font-black uppercase tracking-widest transition-opacity duration-200">
@@ -911,10 +911,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.querySelector('.active-paint-trigger').addEventListener('click', () => {
                     paintedColors[activeScene][activeSegment] = color.hex;
                     applyColorToDOM(activeScene, activeSegment, color.hex);
-                    
+
                     const specColor = findColorByHex(color.hex);
                     updateActiveColorDetails(specColor);
-                    
+
                     // Scroll to visualizer
                     document.getElementById('visualizer').scrollIntoView({ behavior: 'smooth' });
                     showAtlasToast(`Painted Accent Wall: ${color.name}!`);
@@ -945,9 +945,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderGeneratedPalette = () => {
         if (!generatedPaletteBands) return;
         generatedPaletteBands.innerHTML = '';
-        
+
         if (generatedPaletteDesc) generatedPaletteDesc.textContent = `${activeGeneratedPalette.type} Template`;
-        
+
         activeGeneratedPalette.colors.forEach(hex => {
             const band = document.createElement('div');
             band.className = "flex-1 h-full relative group cursor-pointer transition-all duration-300 hover:flex-[1.5]";
@@ -1041,15 +1041,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputAreaRange = document.getElementById('input-area-range');
     const inputAreaNum = document.getElementById('input-area-num');
     const labelAreaVal = document.getElementById('label-area-val');
-    
+
     const selectProduct = document.getElementById('select-product');
     const selectCoats = document.getElementById('select-coats');
-    
+
     const resultQuantity = document.getElementById('result-quantity');
     const resultUnit = document.getElementById('result-unit');
     const resultCost = document.getElementById('result-cost');
     const resultCoverageDesc = document.getElementById('result-coverage-desc');
-    
+
     const checklistPrimer = document.getElementById('checklist-primer');
     const checklistPutty = document.getElementById('checklist-putty');
 
@@ -1078,11 +1078,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const area = parseFloat(inputAreaNum.value) || 0;
         const productKey = selectProduct.value;
         const coats = parseInt(selectCoats.value) || 2;
-        
+
         // Get Surface condition multiplier
         const surfaceConditionEl = document.querySelector('input[name="surface-condition"]:checked');
         const condition = surfaceConditionEl ? surfaceConditionEl.value : 'smooth';
-        
+
         let conditionMultiplier = 1.0;
         if (condition === 'rough') conditionMultiplier = 1.25; // Requires 25% more paint
         if (condition === 'damp') conditionMultiplier = 1.1; // Requires 10% more paint
@@ -1107,7 +1107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update Checklist recommendations
         const primerQty = Math.ceil((area / 110) * 1.5); // Estimate 1.5 coats of primer
         const puttyQty = Math.ceil(area * 0.05); // Estimate ~0.05kg putty per sq.ft.
-        
+
         checklistPrimer.textContent = `HomeShield Wall Primer: ~${primerQty} Litres required`;
         checklistPutty.textContent = `HomeShield Acrylic Putty: ~${puttyQty} Kgs recommended`;
     };
@@ -1133,7 +1133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dropdown listeners
     if (selectProduct) selectProduct.addEventListener('change', calculatePaint);
     if (selectCoats) selectCoats.addEventListener('change', calculatePaint);
-    
+
     // Surface Condition listener
     document.querySelectorAll('input[name="surface-condition"]').forEach(radio => {
         radio.addEventListener('change', () => {
@@ -1157,7 +1157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 6. PREMIUM 3D TILT EFFECT ON CARDS (OPTIMIZED)
     // ==========================================
     const tiltCards = document.querySelectorAll('.tilt-card');
-    
+
     tiltCards.forEach(card => {
         let rect = null;
 
@@ -1171,17 +1171,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const x = e.clientX - rect.left; // x coordinate inside element
             const y = e.clientY - rect.top;  // y coordinate inside element
-            
+
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            
+
             // Calculate rotational values (max rotation 8 degrees)
             const rotateX = ((centerY - y) / centerY) * 8;
             const rotateY = ((x - centerX) / centerX) * 8;
-            
+
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
         });
-        
+
         card.addEventListener('mouseleave', () => {
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
             card.style.boxShadow = '';
@@ -1206,27 +1206,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const toast = document.createElement('div');
         toast.id = 'hs-toast';
-        toast.className = `fixed bottom-8 right-8 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl border backdrop-blur-md shadow-2xl transition-all duration-500 translate-y-10 opacity-0 ${
-            isSuccess 
-                ? 'bg-emerald-950/80 border-emerald-500/30 text-emerald-300' 
+        toast.className = `fixed bottom-8 right-8 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl border backdrop-blur-md shadow-2xl transition-all duration-500 translate-y-10 opacity-0 ${isSuccess
+                ? 'bg-emerald-950/80 border-emerald-500/30 text-emerald-300'
                 : 'bg-rose-950/80 border-rose-500/30 text-rose-300'
-        }`;
-        
-        const icon = isSuccess 
+            }`;
+
+        const icon = isSuccess
             ? `<svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>`
             : `<svg class="w-5 h-5 text-rose-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
-        
+
         toast.innerHTML = `
             ${icon}
             <div class="text-[10px] font-black uppercase tracking-wider">${message}</div>
         `;
-        
+
         document.body.appendChild(toast);
-        
+
         setTimeout(() => {
             toast.classList.remove('translate-y-10', 'opacity-0');
         }, 50);
-        
+
         setTimeout(() => {
             toast.classList.add('translate-y-10', 'opacity-0');
             setTimeout(() => toast.remove(), 500);
@@ -1269,54 +1268,54 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             // Dispatch POST request to our PHP secure mailer
-                        fetch('https://homeshieldweb.onrender.com/send-email.php', {
+            fetch('./send-email.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(lead)
             })
-            .then(async response => {
-                const isJson = response.headers.get('content-type')?.includes('application/json');
-                const data = isJson ? await response.json() : null;
+                .then(async response => {
+                    const isJson = response.headers.get('content-type')?.includes('application/json');
+                    const data = isJson ? await response.json() : null;
 
-                if (!response.ok) {
-                    const errorMsg = (data && data.error) ? data.error : `HTTP Error ${response.status}`;
-                    throw new Error(errorMsg);
-                }
-                return data;
-            })
-            .then(res => {
-                if (res.success) {
-                    // Store lead to LocalStorage for offline registry cache backup
-                    lead.timestamp = new Date().toISOString();
-                    let leads = JSON.parse(localStorage.getItem('homeshield_leads')) || [];
-                    leads.push(lead);
-                    localStorage.setItem('homeshield_leads', JSON.stringify(leads));
+                    if (!response.ok) {
+                        const errorMsg = (data && data.error) ? data.error : `HTTP Error ${response.status}`;
+                        throw new Error(errorMsg);
+                    }
+                    return data;
+                })
+                .then(res => {
+                    if (res.success) {
+                        // Store lead to LocalStorage for offline registry cache backup
+                        lead.timestamp = new Date().toISOString();
+                        let leads = JSON.parse(localStorage.getItem('homeshield_leads')) || [];
+                        leads.push(lead);
+                        localStorage.setItem('homeshield_leads', JSON.stringify(leads));
 
-                    // Trigger Premium success modal
-                    successTicketId.textContent = ticketId;
-                    successModalMsg.innerHTML = `Thank you <strong>${name}</strong>. Your free structural moisture scanning visit and color consultation has been booked successfully!`;
-                    successModal.classList.remove('hidden');
-                    document.body.style.overflow = 'hidden';
+                        // Trigger Premium success modal
+                        successTicketId.textContent = ticketId;
+                        successModalMsg.innerHTML = `Thank you <strong>${name}</strong>. Your free structural moisture scanning visit and color consultation has been booked successfully!`;
+                        successModal.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
 
-                    // Reset form
-                    contactForm.reset();
-                    showPremiumToast("Inspection booked & email sent successfully!", true);
-                } else {
-                    throw new Error(res.error || "Unknown error occurred.");
-                }
-            })
-            .catch(error => {
-                console.error('Error submitting form:', error);
-                showPremiumToast(error.message || "Failed to book. Please check server settings.", false);
-            })
-            .finally(() => {
-                // Restore button state
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalBtnText;
-                submitBtn.style.opacity = "";
-            });
+                        // Reset form
+                        contactForm.reset();
+                        showPremiumToast("Inspection booked & email sent successfully!", true);
+                    } else {
+                        throw new Error(res.error || "Unknown error occurred.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error submitting form:', error);
+                    showPremiumToast(error.message || "Failed to book. Please check server settings.", false);
+                })
+                .finally(() => {
+                    // Restore button state
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.style.opacity = "";
+                });
         });
     }
 
@@ -1523,7 +1522,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // 8. IMMERSIVE 3D FULL-PAGE SCROLL SNAPPING CONTROLLER
     // ==========================================
-    
+
     // Enable 3D Snap scroll system styling lock on body
     document.documentElement.classList.add('scroll-3d-active');
 
@@ -1547,7 +1546,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // HIGH PERFORMANCE: Cache section dimensions to completely prevent layout thrashing (forced reflows)
     let sectionDimensions = [];
-    
+
     const cacheSectionDimensions = () => {
         sectionDimensions = sections.map(section => ({
             scrollHeight: section.scrollHeight,
@@ -1571,7 +1570,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dotsContainer = document.createElement('div');
     dotsContainer.className = 'scroll-dots-container';
     document.body.appendChild(dotsContainer);
-    
+
     // Make dots visible with high performance ease
     setTimeout(() => {
         dotsContainer.classList.add('visible');
@@ -1582,7 +1581,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dot.className = 'scroll-dot';
         const sectionId = section.id || 'hero';
         const name = sectionNames[sectionId] || sectionId;
-        
+
         dot.setAttribute('data-tooltip', name);
         if (index === 0) dot.classList.add('active');
 
@@ -1665,7 +1664,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const transitionToSection = (targetIndex, direction = null) => {
         if (targetIndex < 0 || targetIndex >= sections.length) return;
-        
+
         const prevIndex = currentSectionIndex;
         currentSectionIndex = targetIndex;
         const targetSection = sections[targetIndex];
@@ -1769,7 +1768,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const touchEndY = e.changedTouches[0].clientY;
         const touchEndX = e.changedTouches[0].clientX;
-        
+
         const deltaY = touchStartY - touchEndY;
         const deltaX = touchStartX - touchEndX;
 
@@ -1848,7 +1847,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pagePart === '' || pagePart === 'index.html' || pagePart === './index.html') {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    
+
                     // Close mobile menu if open
                     const mobileMenu = document.getElementById('mobile-menu');
                     if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
