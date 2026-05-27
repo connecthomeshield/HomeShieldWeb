@@ -1154,20 +1154,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==========================================
-    // 6. PREMIUM 3D TILT EFFECT ON CARDS
+    // 6. PREMIUM 3D TILT EFFECT ON CARDS (OPTIMIZED)
     // ==========================================
     const tiltCards = document.querySelectorAll('.tilt-card');
     
     tiltCards.forEach(card => {
+        let rect = null;
+
+        card.addEventListener('mouseenter', () => {
+            rect = card.getBoundingClientRect();
+        });
+
         card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
+            if (!rect) {
+                rect = card.getBoundingClientRect();
+            }
             const x = e.clientX - rect.left; // x coordinate inside element
             const y = e.clientY - rect.top;  // y coordinate inside element
             
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             
-            // Calculate rotational values (max rotation 15 degrees)
+            // Calculate rotational values (max rotation 8 degrees)
             const rotateX = ((centerY - y) / centerY) * 8;
             const rotateY = ((x - centerX) / centerX) * 8;
             
@@ -1177,6 +1185,7 @@ document.addEventListener('DOMContentLoaded', () => {
         card.addEventListener('mouseleave', () => {
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
             card.style.boxShadow = '';
+            rect = null;
         });
     });
 
@@ -1449,7 +1458,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const transitionDuration = 1200; // matching CSS transition time (1.2s)
 
     const sectionNames = {
-        'hero': 'Hero',
+        'inspiration-gallery': 'Gallery',
+        'Main': 'Home',
+        'hero': 'Home',
         'about': 'About Us',
         'products': 'Products',
         'visualizer': 'Studio Visualizer',
@@ -1592,8 +1603,9 @@ document.addEventListener('DOMContentLoaded', () => {
             targetSection.scrollTop = 0;
         } else {
             // When going up, start from the bottom of the section so they can scroll back up
-            // Use dynamic scrollHeight to handle lazy-loaded images properly
-            targetSection.scrollTop = targetSection.scrollHeight;
+            // HIGH PERFORMANCE: Use cached dimensions to avoid layout thrashing
+            const dims = sectionDimensions[targetIndex] || { scrollHeight: targetSection.scrollHeight };
+            targetSection.scrollTop = dims.scrollHeight;
         }
 
         // Add 3D structural perspective transform classes
@@ -1640,9 +1652,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const delta = e.deltaY;
+        const dims = sectionDimensions[currentSectionIndex] || { clientHeight: activeSection.clientHeight, scrollHeight: activeSection.scrollHeight };
+
         if (delta > 0) {
-            // Scroll DOWN (user moving wheel down) - check boundary dynamically
-            const isAtBottom = activeSection.scrollTop + activeSection.clientHeight >= activeSection.scrollHeight - 5;
+            // Scroll DOWN (user moving wheel down) - check boundary utilizing cached dimensions
+            const isAtBottom = activeSection.scrollTop + dims.clientHeight >= dims.scrollHeight - 5;
             if (isAtBottom) {
                 e.preventDefault();
                 if (currentSectionIndex < sections.length - 1) {
@@ -1651,7 +1665,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         } else if (delta < 0) {
-            // Scroll UP (user moving wheel up) - check boundary using cached dimension
+            // Scroll UP (user moving wheel up) - check boundary
             const isAtTop = activeSection.scrollTop <= 5;
             if (isAtTop) {
                 e.preventDefault();
@@ -1691,15 +1705,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (now - lastScrollTime < transitionDuration) return;
 
+            const dims = sectionDimensions[currentSectionIndex] || { clientHeight: activeSection.clientHeight, scrollHeight: activeSection.scrollHeight };
+
             if (deltaY > 0) {
-                // Swiped UPwards (scrolling down) - check boundary dynamically
-                const isAtBottom = activeSection.scrollTop + activeSection.clientHeight >= activeSection.scrollHeight - 8;
+                // Swiped UPwards (scrolling down) - check boundary utilizing cached dimensions
+                const isAtBottom = activeSection.scrollTop + dims.clientHeight >= dims.scrollHeight - 8;
                 if (isAtBottom && currentSectionIndex < sections.length - 1) {
                     lastScrollTime = now;
                     transitionToSection(currentSectionIndex + 1, 'down');
                 }
             } else {
-                // Swiped DOWNwards (scrolling up) - check boundary using cached dimension
+                // Swiped DOWNwards (scrolling up) - check boundary
                 const isAtTop = activeSection.scrollTop <= 8;
                 if (isAtTop && currentSectionIndex > 0) {
                     lastScrollTime = now;
@@ -1719,8 +1735,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (now - lastScrollTime < transitionDuration) return;
 
+        const dims = sectionDimensions[currentSectionIndex] || { clientHeight: activeSection.clientHeight, scrollHeight: activeSection.scrollHeight };
+
         if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
-            const isAtBottom = activeSection.scrollTop + activeSection.clientHeight >= activeSection.scrollHeight - 5;
+            const isAtBottom = activeSection.scrollTop + dims.clientHeight >= dims.scrollHeight - 5;
             if (isAtBottom && currentSectionIndex < sections.length - 1) {
                 e.preventDefault();
                 lastScrollTime = now;
@@ -1806,6 +1824,154 @@ document.addEventListener('DOMContentLoaded', () => {
             initArrow.style.animation = '';
         }
     };
+
+    // ==========================================
+    // 8.5 3D ISOMETRIC WALL INTERACTION SYSTEM
+    // ==========================================
+    const layerCards = document.querySelectorAll('#about [data-layer]');
+    const isoLayers = document.querySelectorAll('.isometric-layer');
+
+    const activateLayer = (layerName) => {
+        isoLayers.forEach(layer => {
+            if (layer.getAttribute('data-layer') === layerName) {
+                layer.classList.add('active-3d-layer');
+            } else {
+                layer.classList.remove('active-3d-layer');
+            }
+        });
+    };
+
+    const deactivateLayers = () => {
+        isoLayers.forEach(layer => {
+            layer.classList.remove('active-3d-layer');
+        });
+    };
+
+    layerCards.forEach(card => {
+        const layerName = card.getAttribute('data-layer');
+        card.addEventListener('mouseenter', () => {
+            activateLayer(layerName);
+        });
+        card.addEventListener('mouseleave', () => {
+            deactivateLayers();
+        });
+    });
+
+    isoLayers.forEach(layer => {
+        const layerName = layer.getAttribute('data-layer');
+        layer.addEventListener('mouseenter', () => {
+            layerCards.forEach(card => {
+                if (card.getAttribute('data-layer') === layerName) {
+                    card.classList.add('border-themeAccent/60', 'shadow-lg', 'bg-themeBgAlt/90');
+                }
+            });
+        });
+        layer.addEventListener('mouseleave', () => {
+            layerCards.forEach(card => {
+                card.classList.remove('border-themeAccent/60', 'shadow-lg', 'bg-themeBgAlt/90');
+            });
+        });
+    });
+
+    // ==========================================
+    // 9. INSPIRATION GALLERY AUTO-SLIDER & SWIPE ENGINE
+    // ==========================================
+    const gallerySection = document.getElementById('inspiration-gallery');
+    const slides = document.querySelectorAll('#inspiration-gallery .gallery-slide');
+    const dots = document.querySelectorAll('#inspiration-gallery .gallery-dot');
+    let currentSlide = 0;
+    let autoplayInterval = null;
+    const slideDuration = 6000; // Auto-play rotate slide every 6 seconds
+
+    const showSlide = (index) => {
+        if (slides.length === 0) return;
+
+        // Keep index in boundary
+        if (index >= slides.length) index = 0;
+        if (index < 0) index = slides.length - 1;
+
+        currentSlide = index;
+
+        // Toggle active slide class
+        slides.forEach((slide, i) => {
+            if (i === currentSlide) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+            }
+        });
+
+        // Toggle active dot class
+        dots.forEach((dot, i) => {
+            if (i === currentSlide) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    };
+
+    const nextSlide = () => {
+        showSlide(currentSlide + 1);
+    };
+
+    const prevSlide = () => {
+        showSlide(currentSlide - 1);
+    };
+
+    const startAutoplay = () => {
+        stopAutoplay();
+        autoplayInterval = setInterval(nextSlide, slideDuration);
+    };
+
+    const stopAutoplay = () => {
+        if (autoplayInterval) {
+            clearInterval(autoplayInterval);
+            autoplayInterval = null;
+        }
+    };
+
+    // Bind indicator dot clicks
+    dots.forEach((dot, idx) => {
+        dot.addEventListener('click', () => {
+            showSlide(idx);
+            startAutoplay(); // Reset autoplay timer on click
+        });
+    });
+
+    // Start slideshow on load
+    startAutoplay();
+
+    // Horizontal Touch swipe triggers specifically for the gallery container
+    if (gallerySection) {
+        let touchStartGXX = 0;
+        let touchStartGYY = 0;
+
+        gallerySection.addEventListener('touchstart', (e) => {
+            touchStartGXX = e.touches[0].clientX;
+            touchStartGYY = e.touches[0].clientY;
+        }, { passive: true });
+
+        gallerySection.addEventListener('touchend', (e) => {
+            const touchEndGXX = e.changedTouches[0].clientX;
+            const touchEndGYY = e.changedTouches[0].clientY;
+
+            const deltaX = touchStartGXX - touchEndGXX;
+            const deltaY = touchStartGYY - touchEndGYY;
+
+            // Horizontal Swipe Check: deltaX is significantly larger than deltaY
+            if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (deltaX > 0) {
+                    // Swiped leftwards -> Show Next Slide
+                    nextSlide();
+                } else {
+                    // Swiped rightwards -> Show Prev Slide
+                    prevSlide();
+                }
+                startAutoplay(); // Reset autoplay timer on manual swipe
+            }
+        }, { passive: true });
+    }
 
     initScrollSystem();
 });
